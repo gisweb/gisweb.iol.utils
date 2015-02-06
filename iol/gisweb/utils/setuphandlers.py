@@ -5,7 +5,7 @@ from .interfaces import IIolDocument
 import logging
 
 PROFILE_ID = 'iol.utils.replication:default'
-logger = logging.getLogger('iol.utils')
+logger = logging.getLogger('iol.gisweb.utils')
 
 def initPackage(context):
     catalog = api.portal.get_tool('portal_catalog')

@@ -51,6 +51,20 @@ class IolDocument(object):
         if db.getIndexInPortal():
             db.portal_catalog.catalog_object(obj, "/".join(db.getPhysicalPath() + (obj.getId(),)))
 
+    security.declarePublic('isActionSupported')
+    def isActionSupported(self,tr=''):
+        if not tr:
+            return False
+        wftool = api.portal.get_tool(name='portal_workflow')
+        for wfname in wftool.getChainFor(self):
+            wf = wftool.getWorkflowById(wfname)
+            if wf.isActionSupported(self,tr):
+                return True
+        return False
 
+    security.declareProtected(IOL_READ_PERMISSION,'getInfoFor')
+    def getInfoFor(self,obj,info,wf_id=''):
+        wftool = api.portal.get_tool(name='portal_workflow')
+        return wftool.getInfoFor(obj,info,default='')
 
 InitializeClass(IolDocument)
