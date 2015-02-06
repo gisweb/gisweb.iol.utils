@@ -53,17 +53,19 @@ class IolDocument(object):
 
     security.declarePublic('isActionSupported')
     def isActionSupported(self,tr=''):
+        obj = self.document
         if not tr:
             return False
         wftool = api.portal.get_tool(name='portal_workflow')
-        for wfname in wftool.getChainFor(self):
+        for wfname in wftool.getChainFor(obj):
             wf = wftool.getWorkflowById(wfname)
-            if wf.isActionSupported(self,tr):
+            if wf.isActionSupported(obj,tr):
                 return True
         return False
 
     security.declareProtected(IOL_READ_PERMISSION,'getInfoFor')
-    def getInfoFor(self,obj,info,wf_id=''):
+    def getInfoFor(self,info,wf_id=''):
+        obj = self.document
         wftool = api.portal.get_tool(name='portal_workflow')
         return wftool.getInfoFor(obj,info,default='')
 
