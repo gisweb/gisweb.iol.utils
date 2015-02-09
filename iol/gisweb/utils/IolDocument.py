@@ -52,16 +52,38 @@ class IolDocument(object):
             db.portal_catalog.catalog_object(obj, "/".join(db.getPhysicalPath() + (obj.getId(),)))
 
     security.declarePublic('isActionSupported')
-    def isActionSupported(self,tr=''):
+    def isActionSupported(self, tr=''):
         obj = self.document
         if not tr:
             return False
         wftool = api.portal.get_tool(name='portal_workflow')
         for wfname in wftool.getChainFor(obj):
             wf = wftool.getWorkflowById(wfname)
-            if wf.isActionSupported(obj,tr):
+            if wf.isActionSupported(obj, tr):
                 return True
         return False
+
+    security.declareProtected(IOL_READ_PERMISSION,'wfInfo')
+    def wfInfo(self,):
+        obj = self.document
+        result = dict(
+            wf_chain=list(),
+            wf_state='',
+            wf_variables=dict(),
+            wf_actions=list(),
+        )
+        wftool = getToolByName(obj, 'portal_workflow')
+
+        result['wf_state'] = api.content.get_state(obj)
+
+        for wf_id in wftool.getChainFor(obj):
+            result['wf_chain'].append(wf_id)
+
+        for wf_var in wftool.getCatalogVariablesFor(obj):
+            result['wf_variables'][wf_var] = wftool.getInfoFor(obj, wf_var, default='')
+
+        result['wf_actions'] = wftool.listActions(object=obj)
+        return result
 
     security.declareProtected(IOL_READ_PERMISSION,'getInfoFor')
     def getInfoFor(self,info,wf_id=''):

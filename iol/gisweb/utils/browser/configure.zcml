@@ -9,4 +9,11 @@
        class=".views.getIolRoles"
        permission="zope2.View"
        />
+    <browser:page
+       name="wfInfo"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument"
+       layer="..interfaces.IIolLayer"
+       class=".views.Info"
+       permission="zope2.View"
+       />
 </configure>

@@ -1,5 +1,6 @@
 from plone import api
 from ..IolDocument import IolDocument
+from Products.CMFPlone.utils import getToolByName
 
 
 
@@ -16,7 +17,7 @@ class getIolRoles(object):
         return iDoc.getIolRoles(doc)
 
 # Retrieve Objects's WorkFlow Info
-class getWfInfo(object):
+class wfInfo(object):
 
     def __init__(self, context, request):
         self.context = context
@@ -25,7 +26,8 @@ class getWfInfo(object):
     def __call__(self):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
-        return iDoc.getWfInfo()
+        self.request.response.headers['Content-Type'] = 'application/json'
+        return iDoc.wfInfo()
 
 
 
@@ -50,15 +52,6 @@ class getTransitions(object):
     def __call__(self):
         return ""
 
-#
-class wfInfo(object):
-
-    def __init__(self,context,request):
-        self.context = context
-        self.request = request
-
-    def __call__(self):
-        return ""
 
 class nextNumber(object):
 
