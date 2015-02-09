@@ -13,7 +13,7 @@
        name="wfInfo"
        for="Products.CMFPlomino.interfaces.IPlominoDocument"
        layer="..interfaces.IIolLayer"
-       class=".views.Info"
+       class=".views.wfInfo"
        permission="zope2.View"
        />
 </configure>

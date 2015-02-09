@@ -1,6 +1,7 @@
 from plone import api
 from ..IolDocument import IolDocument
-from Products.CMFPlone.utils import getToolByName
+import simplejson as json
+import DateTime
 
 
 
@@ -27,7 +28,8 @@ class wfInfo(object):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
         self.request.response.headers['Content-Type'] = 'application/json'
-        return iDoc.wfInfo()
+        print json.dumps(iDoc.wfInfo(),default=DateTime.DateTime.ISO,use_decimal=True)
+        return
 
 
 

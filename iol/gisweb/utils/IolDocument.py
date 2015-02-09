@@ -4,6 +4,7 @@ from plone import api
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
 from Products.CMFPlomino.interfaces import IPlominoDocument, IPlominoForm
+from Products.CMFPlone.utils import getToolByName
 from zope.component import getGlobalSiteManager
 import config
 from zope.component import getUtility
@@ -82,7 +83,7 @@ class IolDocument(object):
         for wf_var in wftool.getCatalogVariablesFor(obj):
             result['wf_variables'][wf_var] = wftool.getInfoFor(obj, wf_var, default='')
 
-        result['wf_actions'] = wftool.listActions(object=obj)
+        result['wf_actions'] = [dict(id=res['id'],title=res['name'],url=res['url']) for res in wftool.listActions(object=obj)]
         return result
 
     security.declareProtected(IOL_READ_PERMISSION,'getInfoFor')
