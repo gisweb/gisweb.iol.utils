@@ -130,5 +130,7 @@ class IolDocument(object):
             api.portal.show_message(message='Errore nel campo %s' %f['name'], request=doc.REQUEST)
         return results
 
+    def docToJson(self):
+        return json.dumps(self.serializeDoc(),default=DateTime.DateTime.ISO,use_decimal=True)
 
 InitializeClass(IolDocument)
