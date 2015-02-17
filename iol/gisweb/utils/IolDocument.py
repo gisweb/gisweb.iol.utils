@@ -129,7 +129,7 @@ class IolDocument(object):
             results[f['name']]= []
             api.portal.show_message(message='Errore nel campo %s' %f['name'], request=doc.REQUEST)
         return results
-
+    security.declarePublic('docToJson')
     def docToJson(self):
         return json.dumps(self.serializeDoc(),default=DateTime.DateTime.ISO,use_decimal=True)
 
