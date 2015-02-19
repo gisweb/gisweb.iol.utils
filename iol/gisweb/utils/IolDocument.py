@@ -72,6 +72,7 @@ class IolDocument(object):
             wf_state='',
             wf_variables=dict(),
             wf_actions=list(),
+            wf_history=list(),
         )
         wftool = getToolByName(obj, 'portal_workflow')
 
@@ -84,6 +85,8 @@ class IolDocument(object):
             result['wf_variables'][wf_var] = wftool.getInfoFor(obj, wf_var, default='')
 
         result['wf_actions'] = [dict(id=res['id'],title=res['name'],url=res['url']) for res in wftool.listActions(object=obj)]
+
+        result['wf_history'] = wftool.getInfoFor(obj, 'review_history', default=[])
         return result
 
     security.declareProtected(IOL_READ_PERMISSION,'getInfoFor')

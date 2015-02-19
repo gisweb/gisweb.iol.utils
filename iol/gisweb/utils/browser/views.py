@@ -27,9 +27,12 @@ class wfInfo(object):
     def __call__(self):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
-        self.request.response.headers['Content-Type'] = 'application/json'
-        print json.dumps(iDoc.wfInfo(),default=DateTime.DateTime.ISO,use_decimal=True)
-        return
+        doc.REQUEST.RESPONSE.headers['Content-Type'] = 'application/json'
+        data = iDoc.wfInfo()
+        data['available_actions'] = list()
+        for act in data['wf_actions']:
+            data['available_actions'] = act['id']
+        return json.dumps(iDoc.wfInfo(),default=DateTime.DateTime.ISO,use_decimal=True)
 
 
 
