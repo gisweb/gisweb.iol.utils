@@ -54,11 +54,10 @@ class wfTransitions(object):
     def __call__(self):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
-        doc.REQUEST.RESPONSE.headers['Content-Type'] = 'application/json'
         data = iDoc.wfInfo()
         result = list()
         for act in data['wf_actions']:
-            result = act['id']
+            result.append(act['id'])
         return result
 
 
