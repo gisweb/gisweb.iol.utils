@@ -32,7 +32,7 @@ class wfInfo(object):
         data['available_actions'] = list()
         for act in data['wf_actions']:
             data['available_actions'] = act['id']
-        return json.dumps(iDoc.wfInfo(),default=DateTime.DateTime.ISO,use_decimal=True)
+        return json.dumps(data,default=DateTime.DateTime.ISO,use_decimal=True)
 
 
 
