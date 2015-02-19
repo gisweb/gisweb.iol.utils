@@ -29,9 +29,6 @@ class wfInfo(object):
         iDoc = IolDocument(doc)
         doc.REQUEST.RESPONSE.headers['Content-Type'] = 'application/json'
         data = iDoc.wfInfo()
-        data['available_actions'] = list()
-        for act in data['wf_actions']:
-            data['available_actions'] = act['id']
         return json.dumps(data,default=DateTime.DateTime.ISO,use_decimal=True)
 
 
@@ -48,14 +45,21 @@ class getState(object):
         return api.content.get_state(obj=doc)
 
 # List of all available Transition
-class getTransitions(object):
+class wfTransitions(object):
 
     def __init__(self,context,request):
         self.context = context
         self.request = request
 
     def __call__(self):
-        return ""
+        doc = self.aq_parent
+        iDoc = IolDocument(doc)
+        doc.REQUEST.RESPONSE.headers['Content-Type'] = 'application/json'
+        data = iDoc.wfInfo()
+        result = list()
+        for act in data['wf_actions']:
+            result = act['id']
+        return result
 
 
 class nextNumber(object):
