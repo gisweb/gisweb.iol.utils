@@ -111,7 +111,7 @@ class IolDocument(object):
     def _removeGroups(self,obj,username,grps):
         portal_groups = getToolByName(obj, 'portal_groups')
         for grp in grps:
-            portal_groups.removePrincipalToGroup(username, grp)
+            portal_groups.removePrincipalFromGroup(username, grp)
 
     #Assign ownership to selected user
     def _assignOwner(self,obj,user,add=True):
@@ -152,6 +152,15 @@ class IolDocument(object):
                 
                 cont += 1
         return cont
+        
+    security.declarePublic('revocaUtente')
+    def revocaUtente(self):
+        obj = self.document
+        user = obj.getOwner()
+        username = user.getUserName()
+        apps = obj.getItem(IOL_APPS_FIELD,[])
+        self._removeGroups(obj,username,apps)
+
 
     def _serialDatagridItem(doc, obj ):
         result = list()
