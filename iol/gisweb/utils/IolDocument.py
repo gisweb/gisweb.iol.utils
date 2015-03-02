@@ -10,7 +10,7 @@ import config
 from zope.component import getUtility
 from gisweb.iol.permissions import IOL_READ_PERMISSION,IOL_EDIT_PERMISSION
 from .interfaces import IIolDocument
-
+from iol.gisweb.utils.config import USER_CREDITABLE_FIELD,USER_UNIQUE_FIELD,IOL_APPS_FIELD,STATUS_FIELD
 from copy import deepcopy
 import simplejson as json
 import DateTime
@@ -26,10 +26,6 @@ class IolDocument(object):
     def __init__(self,obj):
         self.document = obj
         self.tipo_app = self.document.getItem(config.APP_FIELD,config.APP_FIELD_DEFAULT_VALUE)
-
-    security.declarePublic('getIolApp')
-    def getIolApp(self):
-        return self.tipo_app
 
     security.declareProtected(IOL_READ_PERMISSION,'getIolRoles')
     def getIolRoles(self):
@@ -50,8 +46,8 @@ class IolDocument(object):
             if 'iol-manager' in roles:
                 result['iol_manager'].append(usr)
         return result
-
-    security.declareProtected(IOL_READ_PERMISSION,'updateStatus')
+    security.declarePublic('updateStatus')
+    #security.declareProtected(IOL_READ_PERMISSION,'updateStatus')
     def updateStatus(self):
         obj = self.document
         obj.setItem(STATUS_FIELD,api.content.get_state(obj=obj) )
@@ -75,7 +71,7 @@ class IolDocument(object):
         return False
 
     security.declareProtected(IOL_READ_PERMISSION,'wfInfo')
-    def wfInfo(self):
+    def wfInfo(self,):
         obj = self.document
         result = dict(
             wf_chain=list(),
@@ -104,6 +100,58 @@ class IolDocument(object):
         obj = self.document
         wftool = api.portal.get_tool(name='portal_workflow')
         return wftool.getInfoFor(obj,info,default='')
+    
+    #Assign selected user to Iol Groups
+    def _assignGroups(self,obj,username,grps):
+        portal_groups = getToolByName(obj, 'portal_groups')
+        for grp in grps:
+            portal_groups.addPrincipalToGroup(username, grp)
+
+    #remove selected user from groups
+    def _removeGroups(self,obj,username,grps):
+        portal_groups = getToolByName(obj, 'portal_groups')
+        for grp in grps:
+            portal_groups.removePrincipalToGroup(username, grp)
+
+    #Assign ownership to selected user
+    def _assignOwner(self,obj,user,add=True):
+        if add:
+            username = user.getUserName()
+            obj.manage_setLocalRoles(username, ["Owner",])
+        else:
+            obj.changeOwnership(user)
+        obj.reindexObjectSecurity()
+
+     #Procedure that search all documents of the selected user, assign him ownership, and move him in iol groups
+    security.declarePublic('accreditaUtente')
+    def accreditaUtente(self):
+        obj = self.document
+        user = obj.getOwner()
+        username = user.getUserName()
+        apps = obj.getItem(IOL_APPS_FIELD,[])
+
+        #for appName in apps:
+            #app = App(appName)
+            #for grp in app.getOwnerGroups():
+            #    self._assignGroups(obj,username,[grp])
+
+        self._assignGroups(obj,username,apps)
+        
+        catalog = api.portal.get_tool('portal_catalog')
+        brains = catalog(portal_type='PlominoDatabase')
+        unique = obj.getItem(USER_UNIQUE_FIELD,'')
+        cont = 0
+        brains = []
+        for brain in brains:
+            db = brain.getObject()
+            idx = db.getIndex()
+            req = dict(USER_CREDITABLE_FIELD = unique)
+            for br in idx.dbsearch(req,only_allowed=False):
+                doc = br.getObject()
+                self._assignOwner(doc,user)
+                
+                cont += 1
+        return cont
 
     def _serialDatagridItem(doc, obj ):
         result = list()
