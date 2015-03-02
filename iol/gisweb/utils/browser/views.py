@@ -15,7 +15,7 @@ class getIolRoles(object):
     def __call__(self):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
-        return iDoc.getIolRoles(doc)
+        return iDoc.getIolRoles()
 
 # Retrieve Objects's WorkFlow Info
 class wfInfo(object):
