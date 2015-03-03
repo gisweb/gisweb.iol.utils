@@ -85,7 +85,7 @@ class getLabels(object):
         self.context = context
         self.request = request
 
-    def __call__(self):
+    def __call__(self,field):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
-        return iDoc.getLabels()         
+        return iDoc.getLabels(field)         
