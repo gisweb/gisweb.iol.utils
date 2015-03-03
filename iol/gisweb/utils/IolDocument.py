@@ -27,6 +27,10 @@ class IolDocument(object):
         self.document = obj
         self.tipo_app = self.document.getItem(config.APP_FIELD,config.APP_FIELD_DEFAULT_VALUE)
 
+    security.declarePublic('getIolApp')
+    def getIolApp(self):
+        return self.tipo_app
+
     security.declareProtected(IOL_READ_PERMISSION,'getIolRoles')
     def getIolRoles(self):
         obj = self.document
