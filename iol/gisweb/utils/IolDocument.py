@@ -31,6 +31,43 @@ class IolDocument(object):
     def getIolApp(self):
         return self.tipo_app
 
+    security.declarePublic('getLabels')
+    def getLabels(self,field):
+        obj = sel.document
+        db = obj.getParentDatabase()
+        forms = db.getForms()
+        fld = ''
+        for frm in forms:
+            if frm.getFormField(field):
+                fld = frm.getFormField(field)
+        lista = fld.getSettings().getSelectionList(doc)
+
+        label = [i.split('|')[0] for i in lista]
+        value = [i.split('|')[1] for i in lista]
+        widget = fld.getSettings().widget
+        # restuisce un valore testuale 
+        if widget == 'RADIO':
+            if doc.getItem(field)!=None:
+                diz={}
+                for i,v in enumerate(value):
+                    diz[v] = label[i]
+                ll=[]
+            
+                if doc.getItem(field) in diz.keys():
+                    return diz[doc.getItem(field)]
+        # restituisce una lista di etichette
+        elif widget == 'CHECKBOX':
+            if doc.getItem(field)!=None:
+                diz={}
+
+                for i,v in enumerate(value):
+                    diz[v] = label[i]
+                ll=[]
+                for i in doc.getItem(field):
+                    if i in diz.keys():
+                        ll.append(diz[i])
+                return ll         
+
     security.declareProtected(IOL_READ_PERMISSION,'getIolRoles')
     def getIolRoles(self):
         obj = self.document

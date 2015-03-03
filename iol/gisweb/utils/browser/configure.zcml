@@ -23,4 +23,11 @@
        class=".views.wfTransitions"
        permission="zope2.View"
        />
+    <browser:page
+       name="getLabels"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument"
+       layer="..interfaces.IIolLayer"
+       class=".views.getLabels"
+       permission="zope2.View"
+       />   
 </configure>
