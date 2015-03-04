@@ -66,7 +66,17 @@ class IolDocument(object):
                 for i in obj.getItem(field):
                     if i in diz.keys():
                         ll.append(diz[i])
-                return ll         
+                return ll
+
+    security.declarePublic('getFieldValue')
+    def getFieldValue(self,field):
+        obj = self.document
+        db = obj.getParentDatabase()
+        form = obj.getForm()
+        fld = form.getFormField(field)
+        adapt = fld.getSettings()     
+        fieldvalue = adapt.getFieldValue(form, obj)
+        return fieldvalue
 
     security.declareProtected(IOL_READ_PERMISSION,'getIolRoles')
     def getIolRoles(self):

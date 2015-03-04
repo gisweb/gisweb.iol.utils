@@ -88,4 +88,15 @@ class getLabels(object):
     def __call__(self,field):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
-        return iDoc.getLabels(field)         
+        return iDoc.getLabels(field)
+
+class getFieldValue(object):
+
+    def __init__(self,context,request):
+        self.context = context
+        self.request = request
+
+    def __call__(self,field):
+        doc = self.aq_parent
+        iDoc = IolDocument(doc)
+        return iDoc.getFieldValue(field)  

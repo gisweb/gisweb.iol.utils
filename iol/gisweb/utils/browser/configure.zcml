@@ -29,5 +29,12 @@
        layer="..interfaces.IIolLayer"
        class=".views.getLabels"
        permission="zope2.View"
-       />   
+       />
+    <browser:page
+       name="getFieldValue"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument"
+       layer="..interfaces.IIolLayer"
+       class=".views.getFieldValue"
+       permission="zope2.View"
+       />       
 </configure>
