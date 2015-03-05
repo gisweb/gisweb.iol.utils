@@ -99,4 +99,15 @@ class getFieldValue(object):
     def __call__(self,field):
         doc = self.aq_parent
         iDoc = IolDocument(doc)
-        return iDoc.getFieldValue(field)  
+        return iDoc.getFieldValue(field)
+
+#class serialDoc(object):
+
+#    def __init__(self,context,request):
+#        self.context = context
+#        self.request = request
+
+#    def __call__(self,fieldsubset='',fieldsremove='',doc=''):
+#        doc = self.aq_parent
+#        iDoc = IolDocument(doc)
+#        return iDoc.serialDoc(fieldsubset='',fieldsremove='',doc='')  
