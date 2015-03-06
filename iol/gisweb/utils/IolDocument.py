@@ -341,7 +341,7 @@ class IolDocument(object):
                     renderedValue = itemvalue
             else:
                 try:
-                    json_dumps(itemvalue)
+                    json.dumps(itemvalue)
                 except TypeError:
                     renderedValue = u'%s' % itemvalue
                 else:
@@ -432,11 +432,11 @@ class IolDocument(object):
 
         # Output rendering
         if format == 'json':
-            context.REQUEST.RESPONSE.setHeader("Content-type", "application/json")
-            return json_dumps(dict(result))
+            doc.REQUEST.RESPONSE.setHeader("Content-type", "application/json")
+            return json.dumps(dict(result))
         elif format == 'xml':
             assert GOT_XML, '%s' % err
-            context.REQUEST.RESPONSE.setHeader("Content-type", "text/xml")
+            doc.REQUEST.RESPONSE.setHeader("Content-type", "text/xml")
             return '<?xml version="1.0" encoding="UTF-8"?>\n' + dict2xml(dict(info=dict(result)))
         else:
             return result
