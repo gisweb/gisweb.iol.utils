@@ -114,9 +114,10 @@ class IolDocument(object):
         db = obj.getParentDatabase()
         form = obj.getForm()
         fld = form.getFormField(field)
-        adapt = fld.getSettings()     
-        fieldvalue = adapt.getFieldValue(form, obj)
-        return fieldvalue
+        if fld != None:
+            adapt = fld.getSettings()     
+            fieldvalue = adapt.getFieldValue(form, obj)
+            return fieldvalue
 
     security.declareProtected(IOL_READ_PERMISSION,'getIolRoles')
     def getIolRoles(self):
@@ -191,7 +192,25 @@ class IolDocument(object):
         obj = self.document
         wftool = api.portal.get_tool(name='portal_workflow')
         return wftool.getInfoFor(obj,info,default='')
-    
+
+    security.declarePublic('getDatagridValue')
+    def getDatagridValue(self,form='',field=''):
+        doc = self.document
+        db=doc.getParentDatabase()
+        form = db.getForm(form)
+        fld = form.getFormField(field)
+        elenco_fields = fld.getSettings().field_mapping
+        lista_fields = elenco_fields.split(',')
+
+
+        diz_tot=[]
+        for idx,itm in enumerate(doc.getItem(field)):
+            diz = {}
+            for k,v in enumerate(lista_fields):
+                diz[v] = doc.getItem(field)[idx][k]
+            diz_tot.append(diz)
+        return diz_tot
+
     #Assign selected user to Iol Groups
     def _assignGroups(self,obj,username,grps):
         portal_groups = getToolByName(obj, 'portal_groups')
