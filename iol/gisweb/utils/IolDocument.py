@@ -223,6 +223,7 @@ class IolDocument(object):
             for k, v in files_list.items():
 
                 f = doc.getfile(k, asFile=True)
+                import pdb;pdb.set_trace()
                 f.seek(0,os.SEEK_END)
                 size = f.tell()
                 file_info = dict(
