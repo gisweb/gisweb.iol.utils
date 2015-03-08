@@ -22,5 +22,5 @@ class loadJsonFile(object):
         with open(self.file) as json_data:
             try:
                 self.result = json.loads(json_data)
-            except:
-                self.result = dict()
+            except Exception as e:
+                self.result = dict(error=str(e))
