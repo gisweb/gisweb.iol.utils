@@ -19,8 +19,9 @@ class loadJsonFile(object):
         self.file = file
         if not os.path.isfile(self.file):
             self.result = dict()
-        with open(self.file) as json_data:
-            try:
-                self.result = json.loads(json_data)
-            except Exception as e:
-                self.result = dict(error=str(e))
+        f = open(self.file)
+        json_data = f.read()
+        try:
+            self.result = json.loads(json_data)
+        except Exception as e:
+            self.result = dict(error=str(e))
