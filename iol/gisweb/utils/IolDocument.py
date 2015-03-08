@@ -1,3 +1,4 @@
+import os
 from zope.interface import Interface, implements, Attribute
 from zope.component import adapts
 from plone import api
@@ -13,6 +14,7 @@ from .interfaces import IIolDocument
 from iol.gisweb.utils.config import USER_CREDITABLE_FIELD,USER_UNIQUE_FIELD,IOL_APPS_FIELD,STATUS_FIELD
 from copy import deepcopy
 import simplejson as json
+from base64 import b64encode
 from DateTime import DateTime
 import datetime
 
@@ -211,6 +213,28 @@ class IolDocument(object):
             diz_tot.append(diz)
         return diz_tot
 
+    # method to get info on attachment field
+    security.declarePublic('getAttachmentInfo')
+    def getAttachmentInfo(self, field=''):
+        doc = self.document
+        result = list()
+        files_list = doc.getItem(field, None)
+        if files_list and type(files_list) == type(dict()):
+            for k, v in files_list.items():
+
+                f = doc.getfile(k, asFile=True)
+                f.seek(0,os.SEEK_END)
+                size = f.tell()
+                file_info = dict(
+                    name=k,
+                    mimetype=v,
+                    size=size,
+                    url="%s/%s" % (doc.absolute_url(), k),
+                    text=b64encode(f.read(size))
+                )
+                result.append(file_info)
+
+        return result
     #Assign selected user to Iol Groups
     def _assignGroups(self,obj,username,grps):
         portal_groups = getToolByName(obj, 'portal_groups')
