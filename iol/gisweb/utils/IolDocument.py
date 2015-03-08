@@ -224,23 +224,26 @@ class IolDocument(object):
 
                 f = doc.getfile(k, asFile=True)
                 size = f.get_size()
+                mime = f.getContentType()
+    # TODO select correct icon basing on mimetype
                 file_info = dict(
                     name=k,
-                    mimetype=v,
+                    mimetype=mime,
                     size=size,
                     url="%s/%s" % (doc.absolute_url(), k),
-                    text=b64encode(f.__str__())
+                    icon="",
+                    b64file=b64encode(f.__str__())
                 )
                 result.append(file_info)
 
         return result
-    #Assign selected user to Iol Groups
+    # Assign selected user to Iol Groups
     def _assignGroups(self,obj,username,grps):
         portal_groups = getToolByName(obj, 'portal_groups')
         for grp in grps:
             portal_groups.addPrincipalToGroup(username, grp)
 
-    #remove selected user from groups
+    # remove selected user from groups
     def _removeGroups(self,obj,username,grps):
         portal_groups = getToolByName(obj, 'portal_groups')
         for grp in grps:
