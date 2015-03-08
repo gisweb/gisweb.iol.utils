@@ -223,15 +223,13 @@ class IolDocument(object):
             for k, v in files_list.items():
 
                 f = doc.getfile(k, asFile=True)
-                import pdb;pdb.set_trace()
-                f.seek(0,os.SEEK_END)
-                size = f.tell()
+                size = f.get_size()
                 file_info = dict(
                     name=k,
                     mimetype=v,
                     size=size,
                     url="%s/%s" % (doc.absolute_url(), k),
-                    text=b64encode(f.read(size))
+                    text=b64encode(f.__str__())
                 )
                 result.append(file_info)
 
