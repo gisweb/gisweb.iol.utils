@@ -196,11 +196,14 @@ class IolDocument(object):
         return wftool.getInfoFor(obj,info,default='')
 
     security.declarePublic('getDatagridValue')
-    def getDatagridValue(self,form='',field=''):
+    def getDatagridValue(self,field='',form=''):
         doc = self.document
-        db=doc.getParentDatabase()
-        form = db.getForm(form)
-        fld = form.getFormField(field)
+        db = doc.getParentDatabase()
+        if form:
+            frm = db.getForm(form)
+        else:
+            frm = doc.getForm()
+        fld = frm.getFormField(field)
         elenco_fields = fld.getSettings().field_mapping
         lista_fields = elenco_fields.split(',')
 
