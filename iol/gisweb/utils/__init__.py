@@ -17,12 +17,10 @@ class dateEncoder(json.JSONEncoder):
 class loadJsonFile(object):
     def __init__(self, file):
         self.file = file
-    def __call__(self):
         if not os.path.isfile(self.file):
-            return dict()
+            self.result = dict()
         with open(self.file) as json_data:
             try:
-                d = json.loads(json_data)
+                self.result = json.loads(json_data)
             except:
-                return dict()
-            return d
+                self.result = dict()
