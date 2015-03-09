@@ -164,6 +164,10 @@ class IolDocument(object):
                 return True
         return False
 
+    security.declarePublic('wfState')
+    def wfState(self):
+        return api.content.get_state(self.document)
+
     security.declareProtected(IOL_READ_PERMISSION,'wfInfo')
     def wfInfo(self,):
         obj = self.document
