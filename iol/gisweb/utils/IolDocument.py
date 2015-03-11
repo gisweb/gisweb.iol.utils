@@ -1,3 +1,4 @@
+import os
 from zope.interface import Interface, implements, Attribute
 from zope.component import adapts
 from plone import api
@@ -13,6 +14,7 @@ from .interfaces import IIolDocument
 from iol.gisweb.utils.config import USER_CREDITABLE_FIELD,USER_UNIQUE_FIELD,IOL_APPS_FIELD,STATUS_FIELD
 from copy import deepcopy
 import simplejson as json
+from base64 import b64encode
 from DateTime import DateTime
 import datetime
 
@@ -114,9 +116,10 @@ class IolDocument(object):
         db = obj.getParentDatabase()
         form = obj.getForm()
         fld = form.getFormField(field)
-        adapt = fld.getSettings()     
-        fieldvalue = adapt.getFieldValue(form, obj)
-        return fieldvalue
+        if fld != None:
+            adapt = fld.getSettings()     
+            fieldvalue = adapt.getFieldValue(form, obj)
+            return fieldvalue
 
     security.declareProtected(IOL_READ_PERMISSION,'getIolRoles')
     def getIolRoles(self):
@@ -161,6 +164,10 @@ class IolDocument(object):
                 return True
         return False
 
+    security.declarePublic('wfState')
+    def wfState(self):
+        return api.content.get_state(self.document)
+
     security.declareProtected(IOL_READ_PERMISSION,'wfInfo')
     def wfInfo(self,):
         obj = self.document
@@ -191,14 +198,59 @@ class IolDocument(object):
         obj = self.document
         wftool = api.portal.get_tool(name='portal_workflow')
         return wftool.getInfoFor(obj,info,default='')
-    
-    #Assign selected user to Iol Groups
+
+    security.declarePublic('getDatagridValue')
+    def getDatagridValue(self,field='',form=''):
+        doc = self.document
+        db = doc.getParentDatabase()
+        if form:
+            frm = db.getForm(form)
+        else:
+            frm = doc.getForm()
+        fld = frm.getFormField(field)
+        elenco_fields = fld.getSettings().field_mapping
+        lista_fields = elenco_fields.split(',')
+
+
+        diz_tot=[]
+        for idx,itm in enumerate(doc.getItem(field)):
+            diz = {}
+            for k,v in enumerate(lista_fields):
+                diz[v] = doc.getItem(field)[idx][k]
+            diz_tot.append(diz)
+        return diz_tot
+
+    # method to get info on attachment field
+    security.declarePublic('getAttachmentInfo')
+    def getAttachmentInfo(self, field=''):
+        doc = self.document
+        result = list()
+        files_list = doc.getItem(field, None)
+        if files_list and type(files_list) == type(dict()):
+            for k, v in files_list.items():
+
+                f = doc.getfile(k, asFile=True)
+                size = f.get_size()
+                mime = f.getContentType()
+    # TODO select correct icon basing on mimetype
+                file_info = dict(
+                    name=k,
+                    mimetype=mime,
+                    size=size,
+                    url="%s/%s" % (doc.absolute_url(), k),
+                    icon="",
+                    b64file=b64encode(f.__str__())
+                )
+                result.append(file_info)
+
+        return result
+    # Assign selected user to Iol Groups
     def _assignGroups(self,obj,username,grps):
         portal_groups = getToolByName(obj, 'portal_groups')
         for grp in grps:
             portal_groups.addPrincipalToGroup(username, grp)
 
-    #remove selected user from groups
+    # remove selected user from groups
     def _removeGroups(self,obj,username,grps):
         portal_groups = getToolByName(obj, 'portal_groups')
         for grp in grps:
