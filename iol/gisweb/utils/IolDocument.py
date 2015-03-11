@@ -157,16 +157,20 @@ class IolDocument(object):
         obj = self.document
         if not tr:
             return False
-        wftool = api.portal.get_tool(name='portal_workflow')
-        for wfname in wftool.getChainFor(obj):
-            wf = wftool.getWorkflowById(wfname)
+        wf = getToolByName(self.document, 'portal_workflow')      
+        for wfname in wf.getChainFor(obj):
+            
+            wf = wf.getWorkflowById(wfname)
             if wf.isActionSupported(obj, tr):
                 return True
         return False
 
     security.declarePublic('wfState')
     def wfState(self):
-        return api.content.get_state(self.document)
+        wf = getToolByName(self.document, 'portal_workflow')
+        return wf.getInfoFor(self.document, 'review_state')
+
+    
 
     security.declareProtected(IOL_READ_PERMISSION,'wfInfo')
     def wfInfo(self,):
@@ -180,7 +184,7 @@ class IolDocument(object):
         )
         wftool = getToolByName(obj, 'portal_workflow')
 
-        result['wf_state'] = api.content.get_state(obj)
+        result['wf_state'] = self.wfState()
 
         for wf_id in wftool.getChainFor(obj):
             result['wf_chain'].append(wf_id)
@@ -196,8 +200,8 @@ class IolDocument(object):
     security.declareProtected(IOL_READ_PERMISSION,'getInfoFor')
     def getInfoFor(self,info,wf_id=''):
         obj = self.document
-        wftool = api.portal.get_tool(name='portal_workflow')
-        return wftool.getInfoFor(obj,info,default='')
+        wf = getToolByName(obj, 'portal_workflow')
+        return wf.getInfoFor(obj,info,default='')
 
     security.declarePublic('getDatagridValue')
     def getDatagridValue(self,field='',form=''):
