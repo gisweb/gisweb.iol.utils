@@ -31,7 +31,15 @@ class wfInfo(object):
         data = iDoc.wfInfo()
         return json.dumps(data,default=DateTime.DateTime.ISO,use_decimal=True)
 
+class wfWizardInfo(object):
 
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        doc = self.aq_parent
+        return []
 
 # Get Workflow State
 class getState(object):
@@ -53,12 +61,15 @@ class wfTransitions(object):
 
     def __call__(self):
         doc = self.aq_parent
+        if doc.portal_type == 'PlominoForm':
+            return []
         iDoc = IolDocument(doc)
         data = iDoc.wfInfo()
         result = list()
         for act in data['wf_actions']:
             result.append(act['id'])
         return result
+
 
 
 class nextNumber(object):

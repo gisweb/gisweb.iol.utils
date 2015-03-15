@@ -18,9 +18,16 @@
        />
     <browser:page
        name="wfTransitions"
-       for="Products.CMFPlomino.interfaces.IPlominoDocument"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument Products.CMFPlomino.interfaces.IPlominoForm"
        layer="..interfaces.IIolLayer"
        class=".views.wfTransitions"
+       permission="zope2.View"
+       />
+    <browser:page
+       name="wfWizardInfo"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument Products.CMFPlomino.interfaces.IPlominoForm"
+       layer="..interfaces.IIolLayer"
+       class=".views.wfWizardInfo"
        permission="zope2.View"
        />
     <browser:page
