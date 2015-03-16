@@ -27,7 +27,15 @@ class IolDocument(object):
     security.declareObjectPublic()
     def __init__(self,obj):
         self.document = obj
-        self.tipo_app = self.document.getItem(config.APP_FIELD,config.APP_FIELD_DEFAULT_VALUE)
+        if obj.portal_type == 'PlominoForm':
+            tmp = obj.id.split('_')
+            if len(tmp) > 2:
+                app = tmp[-2]
+            else:
+                app = config.APP_FIELD_DEFAULT_VALUE
+            self.tipo_app = app
+        else:
+            self.tipo_app = obj.getItem(config.APP_FIELD,config.APP_FIELD_DEFAULT_VALUE)
 
     security.declarePublic('getIolApp')
     def getIolApp(self):
