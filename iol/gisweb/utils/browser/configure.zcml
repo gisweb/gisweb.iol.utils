@@ -45,5 +45,12 @@
        class=".views.getFieldValue"
        permission="zope2.View"
        />
+    <browser:page
+       name="frmFields"
+       for="Products.CMFPlomino.interfaces.IPlominoForm"
+       layer="..interfaces.IIolLayer"
+       class=".views.frmFields"
+       permission="zope2.View"
+       />
             
 </configure>

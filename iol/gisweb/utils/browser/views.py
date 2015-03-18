@@ -103,6 +103,24 @@ class getFieldValue(object):
         iDoc = IolDocument(doc)
         return iDoc.getFieldValue(field)
 
+class frmFields(object):
+
+    def __init__(self,context,request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        frm = self.aq_parent
+        result = dict()
+        fields=[dict(fieldid = f.id,form=f.aq_parent.id,fieldtype = f.FieldType) for f in frm.getFormFields(includesubforms=True)]
+        for f in fields:
+            if not f['form'] in result.keys():
+                result[f['form']] = dict()
+            result[f['form']][f['fieldid']] = f
+        result = sorted(result)
+        self.request.RESPONSE.headers["content-type"]="application-json"
+        return json.dumps(result)
+
 #class serialDoc(object):
 
 #    def __init__(self,context,request):
