@@ -16,4 +16,41 @@
        class=".views.wfInfo"
        permission="zope2.View"
        />
+    <browser:page
+       name="wfTransitions"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument"
+       layer="..interfaces.IIolLayer"
+       class=".views.wfTransitions"
+       permission="zope2.View"
+       />
+    <browser:page
+       name="wfTransitions"
+       for="Products.CMFPlomino.interfaces.IPlominoForm"
+       layer="..interfaces.IIolLayer"
+       class=".views.wfTransitions"
+       permission="zope2.View"
+    />
+
+    <browser:page
+       name="getLabels"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument"
+       layer="..interfaces.IIolLayer"
+       class=".views.getLabels"
+       permission="zope2.View"
+       />
+    <browser:page
+       name="getFieldValue"
+       for="Products.CMFPlomino.interfaces.IPlominoDocument"
+       layer="..interfaces.IIolLayer"
+       class=".views.getFieldValue"
+       permission="zope2.View"
+       />
+    <browser:page
+       name="frmFields"
+       for="Products.CMFPlomino.interfaces.IPlominoForm"
+       layer="..interfaces.IIolLayer"
+       class=".views.frmFields"
+       permission="zope2.View"
+       />
+            
 </configure>
