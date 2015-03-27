@@ -41,6 +41,14 @@ class IolDocument(object):
     def getIolApp(self):
         return self.tipo_app
 
+    security.declarePublic('verificaRuolo')
+    def verificaRuolo(self,ruolo):
+        doc = self.document
+        pm = api.portal.get().portal_membership 
+        #pm = getToolByName(self,'portal_membership')
+        roles = pm.getAuthenticatedMember().getRolesInContext(doc)
+        return ruolo in roles or 'Manager' in roles
+   
     security.declarePublic('getLabels')
     def getLabels(self,field):
         obj = self.document        
@@ -77,6 +85,21 @@ class IolDocument(object):
                     if i in diz.keys():
                         ll.append(diz[i])
                 return ll
+        elif widget == 'SELECT':
+            if obj.getItem(field)!=None:
+                diz={}           
+                for i,v in enumerate(value):
+                    diz[v] = label[i]
+                ll=[]
+                if isinstance(obj.getItem(field),list):
+                
+                    for i in obj.getItem(field):                    
+                        if i in diz.keys():                  
+                            ll.append(diz[i])
+                    return ll
+                else:
+                    return diz[obj.getItem(field)]
+                            
 
     security.declarePublic('sendMail')
     def sendMail(self, Object, msg, To, From='', as_script=False):
